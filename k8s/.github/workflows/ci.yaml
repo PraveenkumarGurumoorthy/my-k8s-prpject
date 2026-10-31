@@ -18,8 +18,8 @@ jobs:
 
     - name: Validate YAML Manifests (CI)
       run: |
-        kubectl apply --dry-run=client -f k8s/deployment.yaml
-        kubectl apply --dry-run=client -f k8s/service.yaml
+        kubectl apply --dry-run=client -f
+        kubectl apply --dry-run=client -f
 
     - name: Deploy to Kubernetes (CD)
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
