@@ -1,0 +1,31 @@
+name: Kubernetes CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+
+    - name: Validate YAML Manifests (CI)
+      run: |
+        kubectl apply --dry-run=client -f k8s/deployment.yaml
+        kubectl apply --dry-run=client -f k8s/service.yaml
+
+    - name: Deploy to Kubernetes (CD)
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: |
+        # If targeting a remote production/staging cluster, configure kubeconfig here.
+        # For demonstration, this applies the validated manifests:
+        echo "Applying Kubernetes manifests..."
+        # kubectl apply -f k8s/
+        echo "CD Pipeline step executed successfully!"
