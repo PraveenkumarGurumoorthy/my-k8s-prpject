@@ -13,19 +13,8 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: Set up kubectl
-      uses: azure/setup-kubectl@v3
-
-    - name: Validate YAML Manifests (CI)
-      run: |
-        kubectl apply --dry-run=client -f
-        kubectl apply --dry-run=client -f
-
-    - name: Deploy to Kubernetes (CD)
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: |
-        # If targeting a remote production/staging cluster, configure kubeconfig here.
-        # For demonstration, this applies the validated manifests:
-        echo "Applying Kubernetes manifests..."
-        # kubectl apply -f k8s/
-        echo "CD Pipeline step executed successfully!"
+    - name: Run Kubeconform Strict Validation (CI)
+      uses: yannh/kubeconform-action@v4
+      with:
+        files: k8s/
+        strict: true
